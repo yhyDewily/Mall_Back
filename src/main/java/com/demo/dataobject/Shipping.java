@@ -36,13 +36,13 @@ public class Shipping {
 
     private String receiverZip;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
-   private Date create_Time;
+    private Date create_Time;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
-   private Date update_Time;
+    private Date update_Time;
 
     public Shipping(Integer id, Integer userId, String receiverName, String receiverPhone, String receiverMobile, String receiverProvince, String receiverCity, String receiverDistrict, String receiverAddress, String receiverZip, Date create_Time, Date update_Time) {
         this.id = id;
@@ -59,7 +59,8 @@ public class Shipping {
         this.update_Time = update_Time;
     }
 
-    public Shipping() {}
+    public Shipping() {
+    }
 
     public Integer getId() {
         return id;

@@ -11,7 +11,7 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "Product")
-public class Product  {
+public class Product {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,15 +40,15 @@ public class Product  {
 
     private Integer sold;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date create_Time;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date update_Time;
 
-    public Product(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer sold,Integer status, Date create_Time, Date update_Time) {
+    public Product(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer sold, Integer status, Date create_Time, Date update_Time) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -64,7 +64,8 @@ public class Product  {
         this.sold = sold;
     }
 
-    public Product () {}
+    public Product() {
+    }
 
     public Integer getId() {
         return id;

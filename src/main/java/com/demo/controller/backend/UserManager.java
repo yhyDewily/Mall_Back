@@ -23,10 +23,10 @@ public class UserManager {
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session) {
         ServerResponse<User> response = userService.login(username, password);
-        if(response.isSuccess()) {
+        if (response.isSuccess()) {
             User user = response.getData();
             //说明登录的是管理员
-            if(user.getRole() == Const.Role.ROLE_ADMIN) {
+            if (user.getRole() == Const.Role.ROLE_ADMIN) {
                 session.setAttribute(Const.CURRENT_USER, user);
                 return response;
             } else return ServerResponse.createByErrorMessage("不是管理员，无法登录");

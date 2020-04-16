@@ -27,7 +27,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserInfoTest(){
+    void getUserInfoTest() {
         User user = userService.getUserInfo(1);
         System.out.println(user);
     }

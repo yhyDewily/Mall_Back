@@ -24,8 +24,8 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void findAllTest(){
-        for(Product product : repository.findAll())
-        System.out.println(product);
+    void findAllTest() {
+        for (Product product : repository.findAll())
+            System.out.println(product);
     }
 }

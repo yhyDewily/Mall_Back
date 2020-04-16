@@ -36,7 +36,7 @@ class UserRepositoryTest {
     @Test
     void testFindByUsername() {
         int resultCount = repository.checkUsername("admin");
-        if(resultCount > 0) System.out.println("用户存在");
+        if (resultCount > 0) System.out.println("用户存在");
         else System.out.println("用户不存在");
     }
 
@@ -46,7 +46,7 @@ class UserRepositoryTest {
 
     @Test
     void checkEmail() {
-       int resultCount = repository.checkEmail("admin@happymmall.com");
+        int resultCount = repository.checkEmail("admin@happymmall.com");
         System.out.println(resultCount);
     }
 

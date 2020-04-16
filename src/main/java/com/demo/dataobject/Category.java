@@ -26,11 +26,11 @@ public class Category {
 
     private Integer sortOrder;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date create_Time;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date update_Time;
 
@@ -44,7 +44,8 @@ public class Category {
         this.update_Time = update_Time;
     }
 
-    public Category() {}
+    public Category() {
+    }
 
     public Integer getId() {
         return id;

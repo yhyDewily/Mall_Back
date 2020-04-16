@@ -36,12 +36,12 @@ public class User {
 
     private Integer role;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.TIMESTAMP)
     @Generated(GenerationTime.INSERT)
     private Date create_Time;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
 //    @Generated(GenerationTime.ALWAYS)

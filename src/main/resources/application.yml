@@ -17,10 +17,10 @@ spring:
     date-format: yyyy-MM-dd
     serialization:
       indent_output: true
-  data:
-    elasticsearch:
-      cluster-name: elasticsearch
-      cluster-nodes: 127.0.0.1:9300
+#  data:
+#    elasticsearch:
+#      cluster-name: elasticsearch
+#      cluster-nodes: 127.0.0.1:9300
 server:
   port: 8090
 

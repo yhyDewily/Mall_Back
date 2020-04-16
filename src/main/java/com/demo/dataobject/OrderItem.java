@@ -35,11 +35,11 @@ public class OrderItem {
 
     private BigDecimal totalPrice;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date create_Time;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date update_Time;
 
@@ -57,7 +57,8 @@ public class OrderItem {
         this.update_Time = update_Time;
     }
 
-    public OrderItem() {}
+    public OrderItem() {
+    }
 
     public Integer getId() {
         return id;

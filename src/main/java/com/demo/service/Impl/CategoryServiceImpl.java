@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ServerResponse addCategory(String categoryName, Integer parentId) {
-        if(parentId == null || StringUtils.isBlank(categoryName)){
+        if (parentId == null || StringUtils.isBlank(categoryName)) {
             return ServerResponse.createByErrorMessage("添加品类参数错误");
         }
 
@@ -57,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ServerResponse updateCategoryName(Integer categoryId, String categoryName) {
-        if(categoryId == null || StringUtils.isBlank(categoryName)){
+        if (categoryId == null || StringUtils.isBlank(categoryName)) {
             return ServerResponse.createByErrorMessage("更新品类参数错误");
         }
         Category category = new Category();
@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(categoryName);
 
         int rowCount = this.updateAll(category);
-        if(rowCount > 0){
+        if (rowCount > 0) {
             return ServerResponse.createBySuccess("更新品类名字成功");
         }
         return ServerResponse.createByErrorMessage("更新品类名字失败");
@@ -74,21 +74,21 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ServerResponse getChildrenParallelCategory(Integer categoryId) {
         List<Category> categoryList = categoryRepository.selectCategoryChildrenByParentId(categoryId);
-        if(CollectionUtils.isEmpty(categoryList)){
+        if (CollectionUtils.isEmpty(categoryList)) {
             logger.info("未找到当前分类的子分类");
         }
         return ServerResponse.createBySuccess(categoryList);
     }
 
     @Override
-    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId){
+    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId) {
         Set<Category> categorySet = Sets.newHashSet();
-        findChildCategory(categorySet,categoryId);
+        findChildCategory(categorySet, categoryId);
 
 
         List<Integer> categoryIdList = Lists.newArrayList();
-        if(categoryId != null){
-            for(Category categoryItem : categorySet){
+        if (categoryId != null) {
+            for (Category categoryItem : categorySet) {
                 categoryIdList.add(categoryItem.getId());
             }
         }
@@ -98,13 +98,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Set<Category> findChildCategory(Set<Category> categorySet, Integer categoryId) {
         Category category = categoryRepository.selectById(categoryId);
-        if(category != null){
+        if (category != null) {
             categorySet.add(category);
         }
         //查找子节点,递归算法一定要有一个退出的条件
         List<Category> categoryList = categoryRepository.selectCategoryChildrenByParentId(categoryId);
-        for(Category categoryItem : categoryList){
-            findChildCategory(categorySet,categoryItem.getId());
+        for (Category categoryItem : categoryList) {
+            findChildCategory(categorySet, categoryItem.getId());
         }
         return categorySet;
     }

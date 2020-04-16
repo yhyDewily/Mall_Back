@@ -28,11 +28,11 @@ public class PayInfo {
 
     private String platformStatus;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date create_Time;
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @CreatedDate
     private Date update_Time;
 
@@ -47,7 +47,8 @@ public class PayInfo {
         this.update_Time = update_Time;
     }
 
-    public PayInfo() {}
+    public PayInfo() {
+    }
 
     public Integer getId() {
         return id;

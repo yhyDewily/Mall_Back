@@ -46,7 +46,7 @@ public class Detail {
     public Detail() {
     }
 
-    public Detail(Integer id, Integer product_id, String detail){
+    public Detail(Integer id, Integer product_id, String detail) {
         this.id = id;
         this.product_id = product_id;
         this.detail = detail;

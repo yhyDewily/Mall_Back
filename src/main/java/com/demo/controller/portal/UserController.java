@@ -18,16 +18,16 @@ public class UserController {
     @Autowired
     UserServiceImpl userService;
 
-    @RequestMapping(value ="login.do", method = RequestMethod.POST)
+    @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ServerResponse<User> login (String username, String password, HttpServletRequest request){
+    public ServerResponse<User> login(String username, String password, HttpServletRequest request) {
         ServerResponse<User> response = userService.login(username, password);
-        if(response.isSuccess()) request.getSession().setAttribute(Const.CURRENT_USER, response.getData());
+        if (response.isSuccess()) request.getSession().setAttribute(Const.CURRENT_USER, response.getData());
         return response;
     }
 
-    @RequestMapping(value ="logout.do", method = RequestMethod.POST)
+    @RequestMapping(value = "logout.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     public ServerResponse<User> logout(HttpSession session) {
@@ -35,10 +35,10 @@ public class UserController {
         return ServerResponse.createBySuccess();
     }
 
-    @RequestMapping(value ="register.do", method = RequestMethod.POST)
+    @RequestMapping(value = "register.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ServerResponse<String> register (User user) {
+    public ServerResponse<String> register(User user) {
         return userService.register(user);
 
     }
@@ -55,7 +55,7 @@ public class UserController {
     @CrossOrigin
     public ServerResponse<User> getUserInfo(Integer userId) {
         User user = userService.getUserInfo(userId);
-        if( user!= null) {
+        if (user != null) {
             user.setPassword("");
             return ServerResponse.createBySuccess(user);
         }
@@ -101,8 +101,8 @@ public class UserController {
     @ResponseBody
     @CrossOrigin
     public ServerResponse<String> resetPassWord(HttpSession session, String passwordOld, String passwordNew) {
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null) return ServerResponse.createByErrorMessage("用户未登录");
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) return ServerResponse.createByErrorMessage("用户未登录");
         return userService.restPassword(passwordOld, passwordNew, user);
     }
 
@@ -115,17 +115,18 @@ public class UserController {
         user.setId(currentUser.getId());
         user.setUsername(currentUser.getUsername());
         ServerResponse<User> response = userService.update_information(user);
-        if(response.isSuccess()) session.setAttribute(Const.CURRENT_USER, response.getData());
+        if (response.isSuccess()) session.setAttribute(Const.CURRENT_USER, response.getData());
 
         return response;
     }
 
-    @RequestMapping(value = "get_information.do",method = RequestMethod.POST)
+    @RequestMapping(value = "get_information.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
     public ServerResponse<User> get_information(HttpSession session) {
-        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
-        if(currentUser == null) return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，需要强制登录，status=10");
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null)
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录，需要强制登录，status=10");
         return userService.getInformation(currentUser.getId());
     }
 }
