@@ -2,6 +2,9 @@ package com.demo.dataobject;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -11,7 +14,9 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "Product")
+@Document(indexName = "mall", type = "_doc")
 public class Product {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +25,10 @@ public class Product {
     @Column(name = "category_id")
     private Integer categoryId;
 
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String name;
 
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String subtitle;
 
     @Column(name = "main_image")
@@ -30,7 +37,10 @@ public class Product {
     @Column(name = "sub_images")
     private String subImages;
 
+    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String detail;
+
+    private Integer grandId;
 
     private BigDecimal price;
 
@@ -48,7 +58,7 @@ public class Product {
     @CreatedDate
     private Date update_Time;
 
-    public Product(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer sold, Integer status, Date create_Time, Date update_Time) {
+    public Product(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer grandId, Integer stock, Integer sold, Integer status, Date create_Time, Date update_Time) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -62,6 +72,7 @@ public class Product {
         this.create_Time = create_Time;
         this.update_Time = update_Time;
         this.sold = sold;
+        this.grandId = grandId;
     }
 
     public Product() {
@@ -169,5 +180,13 @@ public class Product {
 
     public void setSold(Integer sold) {
         this.sold = sold;
+    }
+
+    public Integer getGrandId() {
+        return grandId;
+    }
+
+    public void setGrandId(Integer grandId) {
+        this.grandId = grandId;
     }
 }

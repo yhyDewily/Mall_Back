@@ -4,6 +4,7 @@ import com.demo.common.Const;
 import com.demo.common.ServerResponse;
 import com.demo.dataobject.User;
 import com.demo.service.Impl.UserServiceImpl;
+import com.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/manager/user")
+@RequestMapping("/manager/user/")
 public class UserManager {
 
     @Autowired

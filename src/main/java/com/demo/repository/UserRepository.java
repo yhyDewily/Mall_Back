@@ -30,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "SELECT count(1) from mall.user where password=?1 and id=?2", nativeQuery = true)
     int checkPassword(String password, Integer userId);
 
-    @Query(value = "SELECT count(1) from mall.user where email=?1 and id=?2",nativeQuery = true)
+    @Query(value = "SELECT count(1) from mall.user where email=?1 and id=?2", nativeQuery = true)
     int checkEmailByUserId(String email, Integer id);
 
     @Query(value = "SELECT * from mall.user where id=?1", nativeQuery = true)

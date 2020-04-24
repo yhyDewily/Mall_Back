@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @RunWith(SpringRunner.class)
 class ProductServiceImplTest {
@@ -25,7 +23,7 @@ class ProductServiceImplTest {
 
     @Test
     void findAllTest() {
-        for (Product product : repository.findAll())
+        for (Product product : repository.findAllProduct())
             System.out.println(product);
     }
 }

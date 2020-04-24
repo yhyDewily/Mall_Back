@@ -5,6 +5,7 @@ import com.demo.common.ResponseCode;
 import com.demo.common.ServerResponse;
 import com.demo.dataobject.User;
 import com.demo.service.Impl.UserServiceImpl;
+import com.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -4,6 +4,7 @@ import com.demo.common.Const;
 import com.demo.common.ServerResponse;
 import com.demo.dataobject.Product;
 import com.demo.dataobject.User;
+import com.demo.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceImplTest {
 
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
 
     @Test
     void login() {

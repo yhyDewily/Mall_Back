@@ -2,9 +2,11 @@ package com.demo.service;
 
 import com.demo.common.ServerResponse;
 import com.demo.dataobject.Category;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+
 
 public interface CategoryService {
 

@@ -18,8 +18,10 @@ public class Cart {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "user_id")
     private Integer userId;
 
+    @Column(name = "product_id")
     private Integer productId;
 
     private Integer quantity;

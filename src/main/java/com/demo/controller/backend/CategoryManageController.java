@@ -3,6 +3,7 @@ package com.demo.controller.backend;
 import com.demo.common.ResponseCode;
 import com.demo.common.ServerResponse;
 import com.demo.dataobject.User;
+import com.demo.service.CategoryService;
 import com.demo.service.Impl.CategoryServiceImpl;
 import com.demo.service.Impl.UserServiceImpl;
 import com.demo.service.UserService;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/manage/category")
+@RequestMapping("/manage/category/")
 public class CategoryManageController {
 
     @Autowired
