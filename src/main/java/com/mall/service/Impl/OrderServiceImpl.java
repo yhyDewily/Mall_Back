@@ -30,6 +30,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.alipay.demo.trade.utils.ZxingUtils;
 
@@ -91,7 +93,6 @@ public class OrderServiceImpl implements OrderService {
         for(OrderItem orderItem : orderItemList){
             orderItem.setOrderNo(order.getOrderNo());
         }
-        //mybatis 批量插入
         for (OrderItem orderItem: orderItemList){
             orderItemRepository.save(orderItem);
         }
@@ -458,7 +459,26 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ServerResponse getOrderList(Integer id, int pageNum, int pageSize) {
-        return null;
+    public ServerResponse<List<OrderVo>> getOrderList(Integer userId, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        List<Order> orderList = orderRepository.findByUserId(userId, pageable);
+        List<OrderVo> orderVoList = assembleOrderVoList(orderList, userId);
+        return ServerResponse.createBySuccess(orderVoList);
+    }
+
+    private List<OrderVo> assembleOrderVoList(List<Order> orderList, Integer userId) {
+        List<OrderVo> orderVoList = Lists.newArrayList();
+        for(Order order : orderList){
+            List<OrderItem>  orderItemList = Lists.newArrayList();
+            if(userId == null){
+                //todo 管理员查询的时候 不需要传userId
+                orderItemList = orderItemRepository.findByOrderNo(order.getOrderNo());
+            }else{
+                orderItemList = orderItemRepository.findAllByOrderNoAndUserId(order.getOrderNo(),userId);
+            }
+            OrderVo orderVo = assembleOrderVo(order,orderItemList);
+            orderVoList.add(orderVo);
+        }
+        return orderVoList;
     }
 }
