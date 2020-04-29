@@ -180,4 +180,8 @@ public class UserServiceImpl implements UserService {
         }
         return ServerResponse.createByError();
     }
+
+    public int checkPhone(String mobile) {
+        return repository.checkPhone(mobile);
+    }
 }

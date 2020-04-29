@@ -14,14 +14,12 @@ public class ProductDetailVo {
     private BigDecimal price;
     private Integer stock;
     private Integer status;
-    private String createTime;
-    private String updateTime;
     private Integer parentCategoryId;
 
     public ProductDetailVo() {
     }
 
-    public ProductDetailVo(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer status, String createTime, String updateTime, Integer parentCategoryId) {
+    public ProductDetailVo(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer status, Integer parentCategoryId) {
         this.id = id;
         this.categoryId = categoryId;
         this.name = name;
@@ -32,8 +30,6 @@ public class ProductDetailVo {
         this.price = price;
         this.stock = stock;
         this.status = status;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
         this.parentCategoryId = parentCategoryId;
     }
 
@@ -115,22 +111,6 @@ public class ProductDetailVo {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Integer getParentCategoryId() {

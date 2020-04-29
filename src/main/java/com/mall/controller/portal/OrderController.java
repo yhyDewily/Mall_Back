@@ -45,10 +45,10 @@ public class OrderController {
     @RequestMapping("create.do")
     @ResponseBody
     @CrossOrigin
-    public ServerResponse create(Integer userId, Integer shippingId){
+    public ServerResponse create(Integer userId, Integer addressId){
         User user = userService.getUserInfo(userId);
         if(user == null) return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
-        return orderService.createOrder(userId,shippingId);
+        return orderService.createOrder(userId,addressId);
     }
 
     @RequestMapping("cancel.do")

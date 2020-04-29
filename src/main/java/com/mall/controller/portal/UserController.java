@@ -71,6 +71,13 @@ public class UserController {
 //        if(user != null) return ServerResponse.createBySuccess(user);
 //        return ServerResponse.createByErrorMessage("用户不存在");
 //    }
+    @RequestMapping(value = "check_phone.do", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public ServerResponse<String> checkPhone(String mobile) {
+        if(userService.checkPhone(mobile)>0) return ServerResponse.createByErrorMessage("手机号已存在");
+        return ServerResponse.createBySuccessMessage("手机号未被使用");
+    }
 
 
     @RequestMapping(value = "forget_get_question.do", method = RequestMethod.POST)

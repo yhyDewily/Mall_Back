@@ -34,7 +34,7 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
     @Query(value = "SELECT quantity from mall.cart where user_id=?1 and product_id=?2", nativeQuery = true)
     int getQuantityByUserIdAndProductId(Integer userId, Integer productId);
 
-    @Query(value = "SELECT * FROM mall.cart where user_id=? and checked=true", nativeQuery = true)
+    @Query(value = "SELECT * FROM mall.cart where user_id=? and checked=1", nativeQuery = true)
     List<Cart> selectCheckedCartByUserId(Integer userId);
 
     void deleteById(Integer id);

@@ -5,13 +5,10 @@ import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.demo.trade.config.Configs;
 import com.alipay.demo.trade.model.ExtendParams;
 import com.alipay.demo.trade.model.GoodsDetail;
-import com.alipay.demo.trade.model.builder.AlipayTradePayRequestBuilder;
 import com.alipay.demo.trade.model.builder.AlipayTradePrecreateRequestBuilder;
-import com.alipay.demo.trade.model.result.AlipayF2FPayResult;
 import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
-import com.alipay.trade.Main;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mall.common.Const;
@@ -37,10 +34,8 @@ import com.alipay.demo.trade.utils.ZxingUtils;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.sql.Date;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -98,6 +93,7 @@ public class OrderServiceImpl implements OrderService {
         }
         //生成成功,我们要减少我们产品的库存
         this.reduceProductStock(orderItemList);
+        this.increaseProductSold(orderItemList);
         //清空一下购物车
         this.cleanCart(cartList);
 
@@ -105,6 +101,14 @@ public class OrderServiceImpl implements OrderService {
 
         OrderVo orderVo = assembleOrderVo(order,orderItemList);
         return ServerResponse.createBySuccess(orderVo);
+    }
+
+    private void increaseProductSold(List<OrderItem> orderItemList) {
+        for(OrderItem orderItem : orderItemList){
+            Product product = productRepository.findByProductId(orderItem.getProductId());
+            product.setStock(product.getStock()+orderItem.getQuantity());
+            productRepository.save(product);
+        }
     }
 
     private OrderVo assembleOrderVo(Order order, List<OrderItem> orderItemList) {
@@ -119,15 +123,14 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setAddressId(order.getAddressId());
         UserAddress userAddress = addressRepository.findById(order.getAddressId()).get();
         if(userAddress != null){
-            orderVo.setReceiverName(userAddress.getRecipient());
+            orderVo.setRecipient(userAddress.getRecipient());
             orderVo.setAddressVo(assembleAddressVo(userAddress));
         }
 
-        orderVo.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
-        orderVo.setSendTime(DateTimeUtil.dateToStr(order.getSendTime()));
-        orderVo.setEndTime(DateTimeUtil.dateToStr(order.getEndTime()));
-        orderVo.setCreateTime(DateTimeUtil.dateToStr(order.getCreate_Time()));
-        orderVo.setCloseTime(DateTimeUtil.dateToStr(order.getCloseTime()));
+//        orderVo.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
+//        orderVo.setSendTime(DateTimeUtil.dateToStr(order.getSendTime()));
+//        orderVo.setEndTime(DateTimeUtil.dateToStr(order.getEndTime()));
+//        orderVo.setCloseTime(DateTimeUtil.dateToStr(order.getCloseTime()));
         
 
         List<OrderItemVo> orderItemVoList = Lists.newArrayList();
@@ -150,7 +153,6 @@ public class OrderServiceImpl implements OrderService {
         orderItemVo.setQuantity(orderItem.getQuantity());
         orderItemVo.setTotalPrice(orderItem.getTotalPrice());
 
-        orderItemVo.setCreateTime(DateTimeUtil.dateToStr(orderItem.getCreate_Time()));
         return orderItemVo;
     }
 
@@ -187,12 +189,17 @@ public class OrderServiceImpl implements OrderService {
 
         order.setUserId(userId);
         order.setAddressId(addressId);
+//        order.setPaymentTime(new Date(new java.util.Date().getTime()));
+//        order.setSendTime(new Date(new java.util.Date().getTime()));
+//        order.setCloseTime(new Date(new java.util.Date().getTime()));
+//        order.setEndTime(new Date(new java.util.Date().getTime()));
         //发货时间等等
         //付款时间等等
         try {
             orderRepository.save(order);
             return order;
         } catch (Exception e){
+            System.out.println(e);
             return null;
         }
     }
@@ -310,7 +317,7 @@ public class OrderServiceImpl implements OrderService {
                 .setUndiscountableAmount(undiscountableAmount).setSellerId(sellerId).setBody(body)
                 .setOperatorId(operatorId).setStoreId(storeId).setExtendParams(extendParams)
                 .setTimeoutExpress(timeoutExpress)
-                .setNotifyUrl("https://www.shumall.com/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
+                .setNotifyUrl("http://shumall.natapp1.cc/order/alipay_callback.do")//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
 
 
@@ -323,7 +330,7 @@ public class OrderServiceImpl implements OrderService {
                 AlipayTradePrecreateResponse response = result.getResponse();
                 dumpResponse(response);
 
-                String path = "D:\\Files\\Code\\Qr_Code";
+                String path = "D:\\Files\\Code\\mall\\mall\\public\\imgs\\qrCode";
 
                 File folder = new File(path);
 
@@ -333,14 +340,14 @@ public class OrderServiceImpl implements OrderService {
                 }
 
                 // 需要修改为运行机器上的路径
-                String qrPath = String.format(path + "/qr-%s.png", response.getOutTradeNo());
+                String qrPath = String.format(path + "\\qr-%s.png", response.getOutTradeNo());
                 String qrFileName = String.format("qr-%s.png", response.getOutTradeNo());
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, qrPath);
 
                 File targetFile = new File(path, qrFileName);
 
                 log.info("filePath:" + qrPath);
-                resultMap.put("qrUrl", path + "/" + qrFileName);
+                resultMap.put("qrUrl", path + "\\" + qrFileName);
                 return ServerResponse.createBySuccess(resultMap);
 
             case FAILED:

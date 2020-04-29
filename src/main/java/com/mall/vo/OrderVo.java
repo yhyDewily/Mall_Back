@@ -33,14 +33,12 @@ public class OrderVo {
 
     private String closeTime;
 
-    private String createTime;
-
     //订单的明细
     private List<OrderItemVo> orderItemVoList;
 
     private String imageHost;
     private Integer addressId;
-    private String receiverName;
+    private String recipient;
 
     private AddressVo addressVo;
 }

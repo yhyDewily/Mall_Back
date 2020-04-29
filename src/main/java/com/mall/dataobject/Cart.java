@@ -1,13 +1,12 @@
 package com.mall.dataobject;
 
 import lombok.Data;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -16,6 +15,7 @@ import java.util.Date;
 public class Cart {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "user_id")
@@ -27,24 +27,6 @@ public class Cart {
     private Integer quantity;
 
     private Integer checked;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @CreatedDate
-    private Date create_Time;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @CreatedDate
-    private Date update_Time;
-
-    public Cart(Integer id, Integer userId, Integer productId, Integer quantity, Integer checked, Date create_Time, Date update_Time) {
-        this.id = id;
-        this.userId = userId;
-        this.productId = productId;
-        this.quantity = quantity;
-        this.checked = checked;
-        this.create_Time = create_Time;
-        this.update_Time = update_Time;
-    }
 
     public Cart() {
     }
@@ -89,19 +71,4 @@ public class Cart {
         this.checked = checked;
     }
 
-    public Date getCreate_Time() {
-        return create_Time;
-    }
-
-    public void setCreate_Time(Date createTime) {
-        this.create_Time = createTime;
-    }
-
-    public Date getUpdate_Time() {
-        return update_Time;
-    }
-
-    public void setUpdate_Time(Date updateTime) {
-        this.update_Time = updateTime;
-    }
 }
