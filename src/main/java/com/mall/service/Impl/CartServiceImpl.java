@@ -56,6 +56,7 @@ public class CartServiceImpl implements CartService {
                     cartProductVo.setProductSubtitle(product.getSubtitle());
                     cartProductVo.setProductPrice(product.getPrice());
                     cartProductVo.setProductStock(product.getStock());
+                    cartProductVo.setProductSize(cartItem.getSize());
                     int buyLimitCount = 0;
                     if(product.getStock() >= cartItem.getQuantity()){
                         //库存充足
@@ -96,22 +97,25 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
+    public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count, String size) {
         if(productId == null || count == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
 
-        Cart cart = cartRepository.findByIdAndUserId(productId, userId);
+        Cart cart = cartRepository.findByUserIdAndProductId(userId, productId);
         if(cart == null) {
             Cart cartItem = new Cart();
             cartItem.setQuantity(count);
-            cart.setProductId(productId);
-            cart.setUserId(userId);
+            cartItem.setProductId(productId);
+            cartItem.setUserId(userId);
+            cartItem.setSize(size);
+            cartItem.setChecked(1);
+            cartRepository.save(cartItem);
         } else {
             count = cart.getQuantity() + count;
             cart.setQuantity(count);
+            cartRepository.save(cart);
         }
-        cartRepository.save(cart);
         return this.list(userId);
     }
 

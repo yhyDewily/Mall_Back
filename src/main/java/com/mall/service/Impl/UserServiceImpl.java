@@ -9,6 +9,9 @@ import com.mall.service.UserService;
 import com.mall.util.MD5Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -183,5 +186,11 @@ public class UserServiceImpl implements UserService {
 
     public int checkPhone(String mobile) {
         return repository.checkPhone(mobile);
+    }
+
+    public ServerResponse getUserList(int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum-1, pageSize);
+        Page<User> users = repository.findAll(pageable);
+        return ServerResponse.createBySuccess(users);
     }
 }

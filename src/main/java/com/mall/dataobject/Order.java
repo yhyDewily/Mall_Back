@@ -43,4 +43,7 @@ public class Order {
 
   @Column(name = "close_time")
   private Date closeTime;
+
+  @Column(name = "create_time")
+  private Date createTime;
 }

@@ -15,15 +15,20 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(value = "SELECT * from mall.product where id=?1", nativeQuery = true)
     Product findByProductId(Integer productId);
 
+    List<Product> findAllById(Integer productId, Pageable pageable);
+
     @Query(value = "SELECT * from mall.product", nativeQuery = true)
     List<Product> findAllProduct();
 
     @Query(value = "select * from mall.product where mall.product.category_id in (select mall.category.id from mall.category where mall.category.parent_id = ?1)", nativeQuery = true)
-    List<Product> findProductBySex(Integer categoryId, Pageable pageable);
+    Page<Product> findProductBySex(Integer categoryId, Pageable pageable);
 
 //    @Query(value = "SELECT * from mall.product", nativeQuery = true)
 //    Page<Product> findAll(Pageable pageable);
     Page<Product> findAllByGrandId(Integer grandId, Pageable pageable);
 
+    List<Product> findByCategoryId(Integer categoryId);
+
+    Page<Product> findByCategoryId(Integer categoryId, Pageable pageable);
 
 }

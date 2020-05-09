@@ -12,4 +12,6 @@ public interface ProductRepo extends ElasticsearchCrudRepository<Product, Intege
 
     List<Product> findByNameContaining(String word_1);
 
+    List<Product> findByCategoryId(int categoryId);
+
 }

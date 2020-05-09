@@ -1,11 +1,14 @@
 package com.mall.vo;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * Created by geely
  */
+@Data
 public class OrderItemVo {
 
     private Long orderNo;
@@ -22,6 +25,8 @@ public class OrderItemVo {
     private BigDecimal totalPrice;
 
     private String createTime;
+
+    private String size;
 
     public Long getOrderNo() {
         return orderNo;

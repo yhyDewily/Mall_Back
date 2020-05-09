@@ -25,10 +25,11 @@ public class Product {
     @Column(name = "category_id")
     private Integer categoryId;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+//    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    @Column(name = "product_name")
     private String name;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+//    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String subtitle;
 
     @Column(name = "main_image")
@@ -37,8 +38,10 @@ public class Product {
     @Column(name = "sub_images")
     private String subImages;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+//    @Field(type = FieldType.Text, analyzer = "ik_max_word")
     private String detail;
+
+    private String params;
 
     private Integer grandId;
 

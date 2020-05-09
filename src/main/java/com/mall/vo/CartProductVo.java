@@ -44,6 +44,8 @@ public class CartProductVo {
     @JsonProperty("limitQuantity")
     private String limitQuantity;
 
+    private String productSize;
+
     public Integer getId() {
         return id;
     }

@@ -1,10 +1,10 @@
 package com.mall.vo;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
-/**
- * Created by geely
- */
+@Data
 public class ProductListVo {
 
     private Integer id;

@@ -3,15 +3,16 @@ package com.mall.service;
 import com.mall.common.ServerResponse;
 import com.mall.dataobject.Product;
 import com.mall.vo.ProductDetailVo;
+import com.mall.vo.ProductVo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ProductService {
 
-    ServerResponse saveOrUpdateProduct(Product product);
+    ServerResponse saveOrUpdateProduct(ProductVo productVo);
 
-    Product getProductInfo(Integer productId);
+    ProductVo getProductInfo(Integer productId);
 
     List<Product> getAll();
 
@@ -24,4 +25,9 @@ public interface ProductService {
     ServerResponse searchProduct(String productName, int pageNum, int pageSize);
 
     ServerResponse<ProductDetailVo> getProductDetail(Integer productId);
+
+    ServerResponse getProductByKeywordCategory(String keyword, int pageNum, int pageSize);
+
+    ServerResponse getProductByCategory(Integer keyword, int pageNum, int pageSize);
+
 }

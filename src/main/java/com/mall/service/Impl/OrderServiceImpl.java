@@ -117,9 +117,11 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setPayment(order.getPayment());
         orderVo.setPaymentType(order.getPaymentType());
         orderVo.setPaymentTypeDesc(Const.PaymentTypeEnum.codeOf(order.getPaymentType()).getValue());
+        if(order.getCloseTime().before(new java.util.Date()) && order.getStatus()<=10){
+            order.setStatus(Const.OrderStatusEnum.ORDER_CLOSE.getCode());
+        }
         orderVo.setStatus(order.getStatus());
         orderVo.setStatusDesc(Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
-
         orderVo.setAddressId(order.getAddressId());
         UserAddress userAddress = addressRepository.findById(order.getAddressId()).get();
         if(userAddress != null){
@@ -127,10 +129,11 @@ public class OrderServiceImpl implements OrderService {
             orderVo.setAddressVo(assembleAddressVo(userAddress));
         }
 
-//        orderVo.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
-//        orderVo.setSendTime(DateTimeUtil.dateToStr(order.getSendTime()));
-//        orderVo.setEndTime(DateTimeUtil.dateToStr(order.getEndTime()));
-//        orderVo.setCloseTime(DateTimeUtil.dateToStr(order.getCloseTime()));
+        orderVo.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
+        orderVo.setCreateTime(DateTimeUtil.dateToStr(order.getCreateTime()));
+        orderVo.setSendTime(DateTimeUtil.dateToStr(order.getSendTime()));
+        orderVo.setEndTime(DateTimeUtil.dateToStr(order.getEndTime()));
+        orderVo.setCloseTime(DateTimeUtil.dateToStr(order.getCloseTime()));
         
 
         List<OrderItemVo> orderItemVoList = Lists.newArrayList();
@@ -152,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
         orderItemVo.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());
         orderItemVo.setQuantity(orderItem.getQuantity());
         orderItemVo.setTotalPrice(orderItem.getTotalPrice());
-
+        orderItemVo.setSize(orderItem.getSize());
         return orderItemVo;
     }
 
@@ -186,9 +189,16 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(Const.OrderStatusEnum.NO_PAY.getCode());
         order.setPaymentType(Const.PaymentTypeEnum.ONLINE_PAY.getCode());
         order.setPayment(payment);
-
         order.setUserId(userId);
         order.setAddressId(addressId);
+        order.setCreateTime(new Date(new java.util.Date().getTime()));
+
+        //订单关闭时间
+        Calendar calendar = Calendar.getInstance();
+        java.util.Date date = new java.util.Date();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, 30);
+        order.setCloseTime(calendar.getTime());
 //        order.setPaymentTime(new Date(new java.util.Date().getTime()));
 //        order.setSendTime(new Date(new java.util.Date().getTime()));
 //        order.setCloseTime(new Date(new java.util.Date().getTime()));
@@ -242,6 +252,7 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setProductImage(product.getMainImage());
             orderItem.setCurrentUnitPrice(product.getPrice());
             orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setSize(cartItem.getSize());
             orderItem.setTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(),cartItem.getQuantity()));
             orderItemList.add(orderItem);
         }
@@ -389,15 +400,25 @@ public class OrderServiceImpl implements OrderService {
             orderRepository.save(order);
         }
 
-        PayInfo payInfo = new PayInfo();
-        payInfo.setUserId(order.getUserId());
-        payInfo.setOrderNo(order.getOrderNo());
-        payInfo.setPayPlatform(Const.PayPlatformEnum.ALIPAY.getCode());
-        payInfo.setPlatformNumber(tradeNo);
-        payInfo.setPlatformStatus(tradeStatus);
+        if(payInfoRepository.findByOrderNo(orderNo) != null) {
+            PayInfo payInfo = payInfoRepository.findByOrderNo(orderNo);
+            payInfo.setUserId(order.getUserId());
+            payInfo.setOrderNo(order.getOrderNo());
+            payInfo.setPayPlatform(Const.PayPlatformEnum.ALIPAY.getCode());
+            payInfo.setPlatformNumber(tradeNo);
+            payInfo.setPlatformStatus(tradeStatus);
 
-        payInfoRepository.save(payInfo);
+            payInfoRepository.save(payInfo);
+        } else {
+            PayInfo payInfo = new PayInfo();
+            payInfo.setUserId(order.getUserId());
+            payInfo.setOrderNo(order.getOrderNo());
+            payInfo.setPayPlatform(Const.PayPlatformEnum.ALIPAY.getCode());
+            payInfo.setPlatformNumber(tradeNo);
+            payInfo.setPlatformStatus(tradeStatus);
 
+            payInfoRepository.save(payInfo);
+        }
         return ServerResponse.createBySuccess();
     }
 
@@ -467,7 +488,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ServerResponse<List<OrderVo>> getOrderList(Integer userId, int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Pageable pageable = PageRequest.of(pageNum-1, pageSize);
         List<Order> orderList = orderRepository.findByUserId(userId, pageable);
         List<OrderVo> orderVoList = assembleOrderVoList(orderList, userId);
         return ServerResponse.createBySuccess(orderVoList);

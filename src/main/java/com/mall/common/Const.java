@@ -43,7 +43,10 @@ public class Const {
         PAID(20,"已付款"),
         SHIPPED(40,"已发货"),
         ORDER_SUCCESS(50,"订单完成"),
+        ORDER_ON_ROAD(70, "在途中"),
+        ORDER_ARRIVED(80, "订单到达"),
         ORDER_CLOSE(60,"订单关闭");
+
 
 
         OrderStatusEnum(int code,String value){

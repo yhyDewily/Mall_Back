@@ -28,6 +28,8 @@ public class Cart {
 
     private Integer checked;
 
+    private String size;
+
     public Cart() {
     }
 

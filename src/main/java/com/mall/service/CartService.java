@@ -9,7 +9,7 @@ public interface CartService {
 
     CartVo getCartVoLimit(Integer userId);
 
-    ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count);
+    ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count, String size);
 
     ServerResponse<CartVo> deleteProduct(Integer userId, Integer productId);
 

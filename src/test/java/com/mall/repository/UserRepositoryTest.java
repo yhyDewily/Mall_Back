@@ -1,8 +1,8 @@
-package com.demo.repository;
+package com.mall.repository;
 
-import com.demo.dataobject.User;
-import com.demo.service.Impl.UserServiceImpl;
-import com.demo.util.MD5Util;
+import com.mall.dataobject.User;
+import com.mall.service.Impl.UserServiceImpl;
+import com.mall.util.MD5Util;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ class UserRepositoryTest {
 
     @Test
     void findByUsername() {
-
+        System.out.println(repository.findByUsername("dewily"));
     }
 
     @Test
@@ -31,6 +31,21 @@ class UserRepositoryTest {
         String md5Password = MD5Util.MD5EncodeUtf8(password);
         User user = repository.findByUsernameAndPassword(username, md5Password);
         System.out.println(user);
+    }
+
+    @Test
+    void testSave(){
+        String username = "admin";
+        String password = "admin";
+        String md5Password = MD5Util.MD5EncodeUtf8(password);
+        User user = new User();
+        user.setPassword(md5Password);
+        user.setEmail("11111@gmail.com");
+        user.setPhone("18817617926");
+        user.setRole(0);
+        user.setUsername(username);
+        user.setSex(1);
+        repository.save(user);
     }
 
     @Test

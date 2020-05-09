@@ -38,12 +38,12 @@ public class CartController {
     @RequestMapping(value = "add.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ServerResponse<CartVo> add(int userId, Integer count, Integer productId){
+    public ServerResponse<CartVo> add(int userId, Integer count, Integer productId, String size){
         User user = userService.getUserInfo(userId);
         if(user ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
-        return cartService.add(user.getId(),productId,count);
+        return cartService.add(user.getId(),productId,count, size);
     }
 
     @RequestMapping(value = "update.do", method = RequestMethod.POST)
@@ -51,7 +51,7 @@ public class CartController {
     @CrossOrigin
     public ServerResponse<CartVo>update(int userId, int productId, int quantity){
         User user = userService.getUserInfo(userId);
-        Product product = productService.getProductInfo(productId);
+        Product product = productService.getProductById(productId);
         if(user ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -66,7 +66,7 @@ public class CartController {
     @CrossOrigin
     public ServerResponse<CartVo> deleteProduct(int userId,int productId){
         User user = userService.getUserInfo(userId);
-        Product product = productService.getProductInfo(productId);
+        Product product = productService.getProductById(productId);
         if(user ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -103,7 +103,7 @@ public class CartController {
     @CrossOrigin
     public ServerResponse<CartVo> select(int userId,Integer productId){
         User user = userService.getUserInfo(userId);
-        Product product = productService.getProductInfo(productId);
+        Product product = productService.getProductById(productId);
         if(user ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
@@ -118,7 +118,7 @@ public class CartController {
     @CrossOrigin
     public ServerResponse<CartVo> unSelect(int userId,Integer productId){
         User user = userService.getUserInfo(userId);
-        Product product = productService.getProductInfo(productId);
+        Product product = productService.getProductById(productId);
         if(user ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }

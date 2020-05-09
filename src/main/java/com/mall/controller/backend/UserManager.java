@@ -1,14 +1,13 @@
 package com.mall.controller.backend;
 
 import com.mall.common.Const;
+import com.mall.common.ResponseCode;
 import com.mall.common.ServerResponse;
 import com.mall.dataobject.User;
 import com.mall.service.Impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,6 +20,7 @@ public class UserManager {
 
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
+    @CrossOrigin
     public ServerResponse<User> login(String username, String password, HttpSession session) {
         ServerResponse<User> response = userService.login(username, password);
         if (response.isSuccess()) {
@@ -33,4 +33,21 @@ public class UserManager {
         }
         return response;
     }
+
+    @RequestMapping(value = "list.do", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public ServerResponse getUsers(Integer userId, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "4") int pageSize) {
+        User user = userService.getUserInfo(userId);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
+        }
+        if(userService.checkAdminRole(user).isSuccess()){
+            //填充业务
+            return userService.getUserList(pageNum, pageSize);
+        }else{
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+    }
+
 }

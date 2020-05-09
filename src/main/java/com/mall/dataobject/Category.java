@@ -18,6 +18,7 @@ public class Category {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "parent_id")
     private Integer parentId;
 
     private String name;

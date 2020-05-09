@@ -1,7 +1,7 @@
-package com.demo.service.Impl;
+package com.mall.service.Impl;
 
-import com.demo.dataobject.Product;
-import com.demo.repository.ProductRepository;
+import com.mall.dataobject.Product;
+import com.mall.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
