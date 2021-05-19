@@ -1,10 +1,13 @@
 package com.mall.service;
 
 import com.mall.common.ServerResponse;
+import com.mall.dataobject.Product;
 import com.mall.dataobject.User;
 
+import java.util.List;
+
 public interface UserService {
-    ServerResponse<String> checkAnswer(String username, String question, String answer);
+    ServerResponse<String> checkAnswer(Integer userId, String question, String answer);
 
     int updateAll(User user);
 
@@ -20,11 +23,13 @@ public interface UserService {
 
     ServerResponse checkValid(String str, String type);
 
-    ServerResponse<String> selectQuestion(String username);
+    ServerResponse<String> selectQuestion(Integer useId);
 
     ServerResponse<String> forgetRestPassword(String username, String passwordNew, String forgetToken);
 
-    ServerResponse<String> restPassword(String passwordOld, String passwordNew, User user);
+    ServerResponse<String> restPassword(Integer userId, String passwordNew);
 
     ServerResponse<Object> checkAdminRole(User user);
+
+    List<Product> getSimilarity(Integer userId);
 }

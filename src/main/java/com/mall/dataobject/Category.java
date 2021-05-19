@@ -24,8 +24,4 @@ public class Category {
     private String name;
 
     private Boolean status;
-
-    @Column(name = "sort_order")
-    private Integer sortOrder;
-
 }

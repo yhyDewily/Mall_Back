@@ -29,6 +29,9 @@ public class OrderItem {
     @Column(name = "product_name")
     private String productName;
 
+    @Column(name = "product_subtitle")
+    private String productSubtitle;
+
     @Column(name = "product_image")
     private String productImage;
 
@@ -41,4 +44,7 @@ public class OrderItem {
     private BigDecimal totalPrice;
 
     private String size;
+
+    @Column(name = "create_time")
+    private Date createTime;
 }

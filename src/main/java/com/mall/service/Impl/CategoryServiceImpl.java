@@ -107,4 +107,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return categorySet;
     }
+
+    public ServerResponse getAllCategory() {
+        List<Category> categoryList = categoryRepository.findAll();
+        return ServerResponse.createBySuccess(categoryList);
+    }
 }

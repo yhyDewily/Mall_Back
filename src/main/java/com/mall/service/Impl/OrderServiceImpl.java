@@ -18,17 +18,13 @@ import com.mall.repository.*;
 import com.mall.service.OrderService;
 import com.mall.util.BigDecimalUtil;
 import com.mall.util.DateTimeUtil;
-import com.mall.vo.AddressVo;
-import com.mall.vo.OrderItemVo;
-import com.mall.vo.OrderProductVo;
-import com.mall.vo.OrderVo;
+import com.mall.vo.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import com.alipay.demo.trade.utils.ZxingUtils;
 
@@ -156,6 +152,8 @@ public class OrderServiceImpl implements OrderService {
         orderItemVo.setQuantity(orderItem.getQuantity());
         orderItemVo.setTotalPrice(orderItem.getTotalPrice());
         orderItemVo.setSize(orderItem.getSize());
+        orderItemVo.setCreateTime(DateTimeUtil.dateToStr(orderItem.getCreateTime()));
+        orderItemVo.setProductSubtitle(orderItem.getProductSubtitle());
         return orderItemVo;
     }
 
@@ -254,7 +252,10 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setSize(cartItem.getSize());
             orderItem.setTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(),cartItem.getQuantity()));
+            orderItem.setCreateTime(new java.util.Date());
+            orderItem.setProductSubtitle(product.getSubtitle());
             orderItemList.add(orderItem);
+
         }
         return ServerResponse.createBySuccess(orderItemList);
     }
@@ -487,11 +488,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ServerResponse<List<OrderVo>> getOrderList(Integer userId, int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNum-1, pageSize);
-        List<Order> orderList = orderRepository.findByUserId(userId, pageable);
-        List<OrderVo> orderVoList = assembleOrderVoList(orderList, userId);
-        return ServerResponse.createBySuccess(orderVoList);
+    public ServerResponse<Page<OrderVo>> getOrderList(Integer userId, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum-1, pageSize, Sort.Direction.DESC, "createTime");
+        Page<Order> orders = orderRepository.findByUserId(userId, pageable);
+        int totalElements = Math.toIntExact(orders.getTotalElements());
+        List<OrderVo> orderVoList = assembleOrderVoList(orders.toList(), userId);
+        Page<OrderVo> orderVoPage = new PageImpl<OrderVo>(orderVoList, pageable,totalElements);
+        return ServerResponse.createBySuccess(orderVoPage);
     }
 
     private List<OrderVo> assembleOrderVoList(List<Order> orderList, Integer userId) {
@@ -508,5 +511,61 @@ public class OrderServiceImpl implements OrderService {
             orderVoList.add(orderVo);
         }
         return orderVoList;
+    }
+
+    public List<OrderSimpleVo> assembleOrderSimpleVo(List<Order> orderList) {
+        List<OrderSimpleVo> orderSimpleVos = new ArrayList<>();
+        for(Order order : orderList) {
+            OrderSimpleVo orderSimpleVo = new OrderSimpleVo();
+            orderSimpleVo.setOrderNo(order.getOrderNo());
+            orderSimpleVo.setCreateTime(DateTimeUtil.dateToStr(order.getCreateTime()));
+            orderSimpleVo.setRecipient(addressRepository.findById(order.getAddressId()).get().getRecipient());
+            orderSimpleVo.setPayment(order.getPayment());
+            orderSimpleVo.setStatus(order.getStatus());
+            orderSimpleVo.setStatus_desc(Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
+            orderSimpleVos.add(orderSimpleVo);
+        }
+        return orderSimpleVos;
+    }
+
+    public ServerResponse getAllOrderList(int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum-1, pageSize);
+        Page<Order> orders = orderRepository.findAll(pageable);
+        List<Order> orderList = orders.toList();
+        List<OrderSimpleVo> orderSimpleVos = assembleOrderSimpleVo(orderList);
+        Page<OrderSimpleVo> page = new PageImpl(orderSimpleVos, pageable, orders.getTotalElements());
+        return ServerResponse.createBySuccess(page);
+    }
+
+    public ServerResponse getOrderListByOrderNo(String keyword, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum-1, pageSize);
+        Page<Order> orders = orderRepository.findByOrderNoKeyword(keyword, pageable);
+        List<Order> orderList = orders.toList();
+        List<OrderSimpleVo> orderSimpleVos = assembleOrderSimpleVo(orderList);
+        Page<OrderSimpleVo> page = new PageImpl(orderSimpleVos, pageable, orders.getTotalElements());
+        return ServerResponse.createBySuccess(page);
+    }
+
+    public ServerResponse sendOrder(Long orderNo) {
+        Order order = orderRepository.findByOrderNo(orderNo);
+        try {
+            order.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
+            orderRepository.save(order);
+            return ServerResponse.createBySuccessMessage("成功发货");
+        } catch (Exception e) {
+            return ServerResponse.createByErrorMessage("发货失败");
+        }
+    }
+
+    public ServerResponse confirmShipping(Integer userId, Long orderNo) {
+        Order order = orderRepository.findByOrderNoAndUserId(orderNo, userId);
+        order.setStatus(Const.OrderStatusEnum.ORDER_SUCCESS.getCode());
+        try {
+            orderRepository.save(order);
+            return ServerResponse.createBySuccess();
+        } catch (Exception e) {
+            return ServerResponse.createByError();
+        }
+
     }
 }

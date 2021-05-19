@@ -17,11 +17,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "SELECT count(1) from mall.user WHERE email=?1", nativeQuery = true)
     int checkEmail(String email);
 
-    @Query(value = "SELECT question from mall.user WHERE  username=?1", nativeQuery = true)
-    String findQuestionByUsername(String username);
+    @Query(value = "select id from mall.user where email=?1", nativeQuery = true)
+    int checkEmailAndUserId(String email);
 
-    @Query(value = "SELECT count(1) from mall.user where username=?1 and question=?2 and anser=?3", nativeQuery = true)
-    int checkAnswer(String username, String question, String answer);
+    @Query(value = "SELECT count(1) from mall.user where id=?1 and question=?2 and answer=?3", nativeQuery = true)
+    int checkAnswer(Integer userId, String question, String answer);
+
+    User findUserByPhone(String mobile);
 
     @Modifying
     @Transactional
@@ -42,4 +44,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByUsername(String userName);
 
+    @Query(value = "SELECT question from mall.user WHERE  id=?1", nativeQuery = true)
+    String findQuestionByUserId(Integer userId);
 }

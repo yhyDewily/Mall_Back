@@ -17,18 +17,19 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 
     Cart findByIdAndUserId(Integer id, Integer userId);
 
+    @Transactional
     void deleteByUserIdAndProductId(Integer userId, Integer productId);
 
     Cart findByUserIdAndProductId(Integer userId, Integer productId);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE mall.cart set checked = ?2,update_time = now() where user_id=?1", nativeQuery = true)
+    @Query(value = "UPDATE mall.cart set checked = ?2 where user_id=?1", nativeQuery = true)
     void checkedOrUncheckedProductAll(Integer userId, int checked);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE mall.cart set checked = ?3,update_time = now() where user_id=?1 and product_id=?2", nativeQuery = true)
+    @Query(value = "UPDATE mall.cart set checked = ?3 where user_id=?1 and product_id=?2", nativeQuery = true)
     void checkedOrUncheckedProduct(Integer userId, int ProductId, int checked);
 
     @Query(value = "SELECT quantity from mall.cart where user_id=?1 and product_id=?2", nativeQuery = true)

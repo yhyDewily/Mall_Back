@@ -56,10 +56,25 @@ class ProductRepositoryTest {
         List<Product> products = repository.findAll();
         Random random = new Random();
         for(Product product : products) {
-            int ran = random.nextInt(100);
-            product.setSold(ran);
+            int ran = random.nextInt(10000);
+            product.setHits((long) ran);
             repository.save(product);
             productRepo.save(product);
+        }
+    }
+
+    @Test
+    void testRandom(){
+        Random random = new Random();
+        int ran = random.nextInt(4);
+        System.out.println(ran);
+    }
+
+    @Test
+    void testHot() {
+        List<Product> products = repository.findBySoldHot();
+        for(Product product : products) {
+            System.out.println(product);
         }
     }
 

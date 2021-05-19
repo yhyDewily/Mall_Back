@@ -95,7 +95,7 @@ public class ProductManagerController {
     @RequestMapping(value = "search.do",method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ServerResponse productSearch(Integer userId, String productName, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "4") int pageSize){
+    public ServerResponse productSearch(Integer userId, String productName, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
         User user = userService.getUserInfo(userId);
         if(user == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
@@ -153,6 +153,21 @@ public class ProductManagerController {
         if(userService.checkAdminRole(user).isSuccess()){
             //填充业务
             return productService.getProductByGrandId(grandId, pageNum, pageSize);
+        }else{
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+    }
+
+    @RequestMapping(value = "gender_sales.do", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public ServerResponse genderSales(Integer userId, Integer genderId) {
+        User user = userService.getUserInfo(userId);
+        if(user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
+        }
+        if(userService.checkAdminRole(user).isSuccess()) {
+            return productService.getProductSalesByGender(genderId);
         }else{
             return ServerResponse.createByErrorMessage("无权限操作");
         }

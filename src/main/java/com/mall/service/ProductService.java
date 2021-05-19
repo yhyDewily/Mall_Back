@@ -30,4 +30,15 @@ public interface ProductService {
 
     ServerResponse getProductByCategory(Integer keyword, int pageNum, int pageSize);
 
+    Product VoToProduct(ProductVo productVo);
+
+    ServerResponse getHotProduct();
+
+    List<Product> getMostHits();
+
+    ServerResponse addProductHit(Integer productId);
+
+    ServerResponse addCategoryHit(Integer userId, Integer productId);
+
+    ServerResponse checkPurchase(Integer userId, Integer productId);
 }

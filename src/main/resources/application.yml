@@ -28,6 +28,17 @@ spring:
       cluster-nodes: localhost:9300
 server:
   port: 8090
+
+aliyun:
+  sms:
+    accessKeyId: LTAI4GDhc7Z4bSZDevtpd7V6
+    accessKeySecret: UEcWaql7VZItlPDSH99QIQdm3y0xDl
+    product: Dysmsapi
+    domain: dysmsapi.aliyuncs.com
+    regionId: cn-hangzhou
+    signName: 品牌服饰空中商城
+    dateFormat: yyyyMMdd
+    endpointName: cn-hangzhou
 ##支付宝支付配置
 #alipayconfig:
 #  #商户APPID

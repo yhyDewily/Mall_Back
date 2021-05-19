@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.mall.common.Const;
 import com.mall.common.ResponseCode;
 import com.mall.common.ServerResponse;
+import com.mall.dataobject.Order;
 import com.mall.dataobject.OrderItem;
 import com.mall.dataobject.Product;
 import com.mall.dataobject.User;
@@ -91,7 +92,7 @@ public class OrderController {
     @RequestMapping("list.do")
     @ResponseBody
     @CrossOrigin
-    public ServerResponse list(Integer userId, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "6") int pageSize){
+    public ServerResponse list(Integer userId, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "5") int pageSize){
         User user = userService.getUserInfo(userId);
         if(user == null) return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         return orderService.getOrderList(user.getId(),pageNum,pageSize);
@@ -147,5 +148,13 @@ public class OrderController {
         return ServerResponse.createBySuccess(false);
     }
 
+    @RequestMapping(value = "confirm_shipping.do",method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public ServerResponse confirmShipping(Integer userId, Long orderNo) {
+        User user = userService.getUserInfo(userId);
+        if(user == null) return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        return orderService.confirmShipping(userId, orderNo);
+    }
 
 }

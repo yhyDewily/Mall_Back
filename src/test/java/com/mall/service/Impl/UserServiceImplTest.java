@@ -25,4 +25,18 @@ class UserServiceImplTest {
         User user = userService.getUserInfo(1);
         System.out.println(user);
     }
+
+    @Test
+    void register() {
+        User user = new User();
+        user.setUsername("eevee");
+        user.setPassword("eevee1");
+        user.setSex(0);
+        user.setEmail("eevee@gmail.com");
+        user.setPhone("18817452369");
+        user.setQuestion("问题一");
+        user.setAnswer("答案二");
+        user.setRole(0);
+        userService.register(user);
+    }
 }

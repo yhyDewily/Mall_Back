@@ -3,13 +3,22 @@ package com.mall.controller.portal;
 import com.mall.common.Const;
 import com.mall.common.ResponseCode;
 import com.mall.common.ServerResponse;
+import com.mall.dataobject.Product;
 import com.mall.dataobject.User;
+import com.mall.dataobject.UserActiveDTO;
+import com.mall.dataobject.UserSimilarityDTO;
+import com.mall.service.Impl.ActiveServiceImpl;
+import com.mall.service.Impl.ProductServiceImpl;
+import com.mall.service.Impl.SimilarityServiceImpl;
 import com.mall.service.Impl.UserServiceImpl;
+import com.mall.util.RecommendUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user/")
@@ -17,6 +26,15 @@ public class UserController {
 
     @Autowired
     UserServiceImpl userService;
+
+    @Autowired
+    ProductServiceImpl productService;
+
+    @Autowired
+    SimilarityServiceImpl similarityService;
+
+    @Autowired
+    ActiveServiceImpl activeService;
 
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
@@ -41,6 +59,21 @@ public class UserController {
     public ServerResponse<String> register(User user) {
         return userService.register(user);
 
+    }
+
+    @RequestMapping(value = "check_identify.do", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public ServerResponse checkIdentify(String mobile, String identifyCode) {
+        return userService.checkIdentify(mobile, identifyCode);
+    }
+
+    @RequestMapping(value = "sendSms.do", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public ServerResponse sendSms(String mobile) {
+        if(userService.checkPhone(mobile)>0) return ServerResponse.createByErrorMessage("手机号已存在");
+        return userService.sendSms(mobile);
     }
 
     @RequestMapping(value = "check_valid.do", method = RequestMethod.POST)
@@ -79,20 +112,31 @@ public class UserController {
         return ServerResponse.createBySuccessMessage("手机号未被使用");
     }
 
+    @RequestMapping(value = "check_user_phone.do", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public ServerResponse checkUserByPhone(String mobile) {
+        if(userService.checkPhone(mobile) > 0) {
+            return ServerResponse.createBySuccess(userService.getUserIdByPhone(mobile));
+        }
+        return ServerResponse.createByErrorMessage("手机号未绑定");
+    }
 
     @RequestMapping(value = "forget_get_question.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ServerResponse<String> forgetGetQuestion(String username) {
-        return userService.selectQuestion(username);
+    public ServerResponse<String> forgetGetQuestion(Integer userId) {
+        User user = userService.getUserInfo(userId);
+        if(user == null) return ServerResponse.createByErrorMessage("用户不存在");
+        return userService.selectQuestion(userId);
 
     }
 
     @RequestMapping(value = "forget_check_question.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
-        return userService.checkAnswer(username, question, answer);
+    public ServerResponse forgetCheckAnswer(Integer userId, String question, String answer) {
+        return userService.checkAnswer(userId, question, answer);
 
     }
 
@@ -107,24 +151,19 @@ public class UserController {
     @RequestMapping(value = "reset_password.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ServerResponse<String> resetPassWord(HttpSession session, String passwordOld, String passwordNew) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if (user == null) return ServerResponse.createByErrorMessage("用户未登录");
-        return userService.restPassword(passwordOld, passwordNew, user);
+    public ServerResponse<String> resetPassWord(Integer userId, String passwordNew) {
+        User user = userService.getUserInfo(userId);
+        if(user == null) return ServerResponse.createByErrorMessage("用户不存在");
+        return userService.restPassword(userId,passwordNew);
     }
 
     @RequestMapping(value = "update_information.do", method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin
-    public ServerResponse<User> updateInformation(HttpSession session, User user) {
-        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
-        if (currentUser == null) return ServerResponse.createByErrorMessage("用户未登录");
-        user.setId(currentUser.getId());
-        user.setUsername(currentUser.getUsername());
-        ServerResponse<User> response = userService.update_information(user);
-        if (response.isSuccess()) session.setAttribute(Const.CURRENT_USER, response.getData());
-
-        return response;
+    public ServerResponse<User> updateInformation(User user) {
+        User former_user = userService.getUserInfo(user.getId());
+        if (former_user == null) return ServerResponse.createBySuccessMessage("用户不存在");
+        return userService.update_information(user);
     }
 
     @RequestMapping(value = "get_information.do", method = RequestMethod.POST)
@@ -136,4 +175,20 @@ public class UserController {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "未登录，需要强制登录，status=10");
         return userService.getInformation(currentUser.getId());
     }
+
+    @RequestMapping(value = "get_similarity.do", method = RequestMethod.POST)
+    @ResponseBody
+    @CrossOrigin
+    public ServerResponse getSimilarity(Integer userId) {
+        User user = userService.getUserInfo(userId);
+        if(user == null) {
+            return ServerResponse.createBySuccess(productService.getHotProduct());
+        }
+        if(userService.checkSimilarity(userId) >0) {
+            return ServerResponse.createBySuccess(userService.getSimilarity(userId));
+        }
+        return ServerResponse.createBySuccess("暂无点击行为，返回热门产品",productService.getHotProduct());
+    }
+
+
 }
